@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1077145791365",
+    "project_id": "scb-notification-d3cf2",
+    "storage_bucket": "scb-notification-d3cf2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1077145791365:android:8c0d2964add9e7fb2a72ec",
+        "android_client_info": {
+          "package_name": "com.example.scb_notification_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8DdrLHjukHj_0Qv6wKporQv3LgVWtlVY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
