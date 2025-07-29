@@ -5,7 +5,8 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:scb_notification_app/main.dart';
-import 'package:scb_notification_app/pages/notification_page.dart';
+import 'package:scb_notification_app/pages/login_page.dart';
+import 'package:scb_notification_app/pages/sign_up.dart';
 
 Future<void> handleBackgroundMessage(RemoteMessage message) async {
   print('Title: ${message.notification?.title}');
@@ -27,35 +28,42 @@ class FirebaseApi {
 
   void handleMessage(RemoteMessage? message) {
     if (message == null) return;
-    navigatorKey.currentState?.pushNamed(
-      NotificationPage.route,
-      arguments: message,
+    // navigatorKey.currentState?.pushNamed(
+    //   NotificationPage.route,
+    //   arguments: message,
+    // );
+    if (message.notification?.title == "Login") {
+      navigatorKey.currentState?.pushNamed(LoginPage.route, arguments: message);
+    }
+    if (message.notification?.title == "Sign Up") {
+      navigatorKey.currentState?.pushNamed(SignUpPage.route, arguments: message);
+    }
+  }
+
+  Future<void> initLocalNotifications() async {
+    const android = AndroidInitializationSettings('@drawable/ic_launcher');
+    const settings = InitializationSettings(android: android);
+
+    await _localNotifications.initialize(
+      settings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) async {
+        final payload = response.payload;
+        if (payload != null) {
+          final message = RemoteMessage.fromMap(jsonDecode(payload));
+          handleMessage(message);
+        }
+      },
     );
+
+    final platform = _localNotifications
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+
+    if (platform != null) {
+      await platform.createNotificationChannel(_androidChannel);
+    }
   }
-
-Future<void> initLocalNotifications() async {
-  const android = AndroidInitializationSettings('@drawable/ic_launcher');
-  const settings = InitializationSettings(android: android);
-
-  await _localNotifications.initialize(
-    settings,
-    onDidReceiveNotificationResponse: (NotificationResponse response) async {
-      final payload = response.payload;
-      if (payload != null) {
-        final message = RemoteMessage.fromMap(jsonDecode(payload));
-        handleMessage(message);
-      }
-    },
-  );
-
-  final platform = _localNotifications
-      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
-
-  if (platform != null) {
-    await platform.createNotificationChannel(_androidChannel);
-  }
-}
-
 
   Future initPushNotifications() async {
     await FirebaseMessaging.instance
